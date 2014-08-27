@@ -36,7 +36,24 @@ module OkComputer
     def to_json(*args)
       # NOTE swallowing the arguments that Rails passes by default since we don't care. This may prove to be a bad idea
       # Rails passes stuff like this: {:prefixes=>["ok_computer", "application"], :template=>"show", :layout=>#<Proc>}]
-      {registrant_name => {:message => message, :success => success?}}.to_json
+      if OkComputer.flat_responses
+        return {OkComputer.message_key => message, OkComputer.success_key => success_text}.to_json
+      else
+        return {registrant_name => {OkComputer.message_key => message, OkComputer.success_key => success_text}}.to_json
+      end
+    end
+
+    def success_text
+      OkComputer.custom_status ? translate(success?) : success?
+    end
+
+    def translate(success)
+      case success
+      when true
+        OkComputer.success_text
+      else
+        OkComputer.failure_text
+      end
     end
 
     # Public: Whether the check passed

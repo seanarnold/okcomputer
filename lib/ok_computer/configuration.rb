@@ -40,10 +40,35 @@ module OkComputer
     username && password
   end
 
+  def self.custom_text(options={})
+    self.custom_status = true if options.present?
+    options.each do |key, val|
+      self.send("#{key}=", val) 
+    end
+  end
+
   # Public: The route to automatically mount the OkComputer engine. Setting to false
   # prevents OkComputer from automatically mounting itself.
   mattr_accessor :mount_at
   self.mount_at = 'okcomputer'
+
+  mattr_accessor :flat_responses
+  self.flat_responses = false
+
+  mattr_accessor :custom_status
+  self.custom_status = false
+
+  mattr_accessor :message_key
+  self.message_key = "message"
+
+  mattr_accessor :success_key
+  self.success_key = "success"
+
+  mattr_accessor :success_text
+  self.success_text = "true" 
+
+  mattr_accessor :failure_text
+  self.failure_text = "false"
 
   # Public: Option to disable third-party app performance tools (.e.g NewRelic) from counting OkComputer routes towards their total.
   mattr_accessor :analytics_ignore
